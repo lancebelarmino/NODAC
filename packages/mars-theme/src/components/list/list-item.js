@@ -1,6 +1,9 @@
-import { connect, styled } from "frontity";
-import Link from "../link";
-import FeaturedMedia from "../featured-media";
+import { connect, styled } from 'frontity';
+import { Anchor, Image, Title, Divider, Text, Group, Button } from '@mantine/core';
+import Link from '../link';
+import WindowCard from '../Card/WindowCard';
+import fallback from '../../assets/images/news-fallback.jpg';
+import useStyles from './list-item.styles';
 
 /**
  * Item Component
@@ -11,73 +14,58 @@ import FeaturedMedia from "../featured-media";
  * - FeaturedMedia: the featured image/video of the post
  */
 const Item = ({ state, item }) => {
-  const author = state.source.author[item.author];
   const date = new Date(item.date);
+  const { classes } = useStyles();
+  const media = state.source.attachment[item.featured_media];
+
+  console.log();
 
   return (
-    <article>
-      <Link link={item.link}>
-        <Title dangerouslySetInnerHTML={{ __html: item.title.rendered }} />
-      </Link>
+    <WindowCard>
+      <article className={classes.content}>
+        {/*
+         * If the want to show featured media in the
+         * list of featured posts, we render the media.
+         * {state.theme.featured.showOnList && <FeaturedMedia id={item.featured_media} />}
+         */}
 
-      <div>
-        {/* If the post has an author, we render a clickable author text. */}
-        {author && (
-          <StyledLink link={author.link}>
-            <AuthorName>
-              By <b>{author.name}</b>
-            </AuthorName>
-          </StyledLink>
-        )}
-        <PublishDate>
-          {" "}
-          on <b>{date.toDateString()}</b>
-        </PublishDate>
-      </div>
+        <Anchor component={Link} link={item.link}>
+          {media ? (
+            <img className={classes.media} src={state.source.attachment[item.featured_media].source_url}></img>
+          ) : (
+            <Image className={classes.media} src={fallback} height={200} withPlaceholder />
+          )}
+        </Anchor>
 
-      {/*
-       * If the want to show featured media in the
-       * list of featured posts, we render the media.
-       */}
-      {state.theme.featured.showOnList && (
-        <FeaturedMedia id={item.featured_media} />
-      )}
+        {/*
+         *  <Title dangerouslySetInnerHTML={{ __html: item.title.rendered }} />
+         */}
+        <Anchor component={Link} link={item.link}>
+          <Title className={classes.title} order={5}>
+            {item.title.rendered}
+          </Title>
+        </Anchor>
 
-      {/* If the post has an excerpt (short summary text), we render it */}
-      {item.excerpt && (
-        <Excerpt dangerouslySetInnerHTML={{ __html: item.excerpt.rendered }} />
-      )}
-    </article>
+        <Divider />
+
+        {/* If the post has an excerpt (short summary text), we render it */}
+        {item.excerpt && <Excerpt dangerouslySetInnerHTML={{ __html: item.excerpt.rendered }} />}
+
+        <Group position="apart">
+          <Text>{date.toDateString()}</Text>
+          <Button component={Link} className={classes.btn} link={item.link}>
+            Read Full Article
+          </Button>
+        </Group>
+      </article>
+    </WindowCard>
   );
 };
 
 // Connect the Item to gain access to `state` as a prop
 export default connect(Item);
 
-const Title = styled.h1`
-  font-size: 2rem;
-  color: rgba(12, 17, 43);
-  margin: 0;
-  padding-top: 24px;
-  padding-bottom: 8px;
-  box-sizing: border-box;
-`;
-
-const AuthorName = styled.span`
-  color: rgba(12, 17, 43, 0.9);
-  font-size: 0.9em;
-`;
-
-const StyledLink = styled(Link)`
-  padding: 15px 0;
-`;
-
-const PublishDate = styled.span`
-  color: rgba(12, 17, 43, 0.9);
-  font-size: 0.9em;
-`;
-
 const Excerpt = styled.div`
   line-height: 1.6em;
-  color: rgba(12, 17, 43, 0.8);
+  color: #0a0a0d;
 `;

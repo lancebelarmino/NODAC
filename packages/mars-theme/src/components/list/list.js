@@ -1,18 +1,37 @@
-import { connect, styled, decode } from "frontity";
-import Item from "./list-item";
-import Pagination from "./pagination";
+import React, { useState } from 'react';
+import { connect, styled, decode } from 'frontity';
+import { Title, SimpleGrid, Pagination } from '@mantine/core';
+import Item from './list-item';
+import Section from '../Section/Section';
+import useStyles from './list.styles';
 
 const List = ({ state }) => {
+  const { classes } = useStyles();
+
   // Get the data of the current list.
   const data = state.source.get(state.router.link);
 
+  // Custom Pagination
+  const [pageNumber, setPageNumber] = useState(1);
+  const postsPerPage = 3;
+  const indexOfLastPost = pageNumber * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = data.items.slice(indexOfFirstPost, indexOfLastPost).map(({ type, id }) => {
+    const item = state.source[type][id];
+    return <Item key={item.id} item={item} />;
+  });
+  const pageCount = Math.ceil(data.items.length / postsPerPage);
+
   return (
-    <Container>
+    <Section className={classes.section}>
+      <div className={classes.header}>
+        <Title order={1}>News & Updates</Title>
+      </div>
+
       {/* If the list is a taxonomy, we render a title. */}
       {data.isTaxonomy && (
         <Header>
-          {data.taxonomy}:{" "}
-          <b>{decode(state.source[data.taxonomy][data.id].name)}</b>
+          {data.taxonomy}: <b>{decode(state.source[data.taxonomy][data.id].name)}</b>
         </Header>
       )}
 
@@ -24,24 +43,18 @@ const List = ({ state }) => {
       )}
 
       {/* Iterate over the items of the list. */}
-      {data.items.map(({ type, id }) => {
-        const item = state.source[type][id];
-        // Render one Item component for each one.
-        return <Item key={item.id} item={item} />;
-      })}
-      <Pagination />
-    </Container>
+      <SimpleGrid className={classes.posts} cols={3} spacing={40} breakpoints={[{ maxWidth: 1024, cols: 1, spacing: 60 }]}>
+        {currentPosts}
+      </SimpleGrid>
+
+      <div className={classes.pagination}>
+        <Pagination page={pageNumber} onChange={setPageNumber} total={pageCount} size="xl" radius="xl" />
+      </div>
+    </Section>
   );
 };
 
 export default connect(List);
-
-const Container = styled.section`
-  width: 800px;
-  margin: 0;
-  padding: 24px;
-  list-style: none;
-`;
 
 const Header = styled.h3`
   font-weight: 300;

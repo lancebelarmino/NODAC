@@ -1,8 +1,10 @@
-import { useEffect } from "react";
-import { connect, styled } from "frontity";
-import Link from "./link";
-import List from "./list";
-import FeaturedMedia from "./featured-media";
+import { useEffect } from 'react';
+import { connect, styled } from 'frontity';
+import Link from './link';
+import List from './List';
+import Section from './Section/Section';
+import FeaturedMedia from './featured-media';
+import useStyles from './post.styles';
 
 /**
  * The Post component that Mars uses to render any kind of "post type", like
@@ -36,19 +38,22 @@ const Post = ({ state, actions, libraries }) => {
   // Get the html2react component.
   const Html2React = libraries.html2react.Component;
 
+  // Mantine Styling
+  const { classes } = useStyles();
+
   /**
    * Once the post has loaded in the DOM, prefetch both the
    * home posts and the list component so if the user visits
    * the home page, everything is ready and it loads instantly.
    */
   useEffect(() => {
-    actions.source.fetch("/");
+    actions.source.fetch('/');
     List.preload();
   }, [actions.source]);
 
   // Load the post, but only if the data is ready.
   return data.isReady ? (
-    <Container>
+    <Section className={classes.section}>
       <div>
         <Title dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
 
@@ -63,7 +68,7 @@ const Post = ({ state, actions, libraries }) => {
               </StyledLink>
             )}
             <DateWrapper>
-              {" "}
+              {' '}
               on <b>{date.toDateString()}</b>
             </DateWrapper>
           </div>
@@ -71,9 +76,7 @@ const Post = ({ state, actions, libraries }) => {
       </div>
 
       {/* Look at the settings to see if we should include the featured image */}
-      {state.theme.featured.showOnPost && (
-        <FeaturedMedia id={post.featured_media} />
-      )}
+      {state.theme.featured.showOnPost && <FeaturedMedia id={post.featured_media} />}
 
       {data.isAttachment ? (
         // If the post is an attachment, just render the description property,
@@ -87,7 +90,7 @@ const Post = ({ state, actions, libraries }) => {
           <Html2React html={post.content.rendered} />
         </Content>
       )}
-    </Container>
+    </Section>
   ) : null;
 };
 
@@ -172,12 +175,12 @@ const Content = styled.div`
 
   /* Input fields styles */
 
-  input[type="text"],
-  input[type="email"],
-  input[type="url"],
-  input[type="tel"],
-  input[type="number"],
-  input[type="date"],
+  input[type='text'],
+  input[type='email'],
+  input[type='url'],
+  input[type='tel'],
+  input[type='number'],
+  input[type='date'],
   textarea,
   select {
     display: block;
@@ -199,7 +202,7 @@ const Content = styled.div`
     }
   }
 
-  input[type="submit"] {
+  input[type='submit'] {
     display: inline-block;
     margin-bottom: 0;
     font-weight: 400;
