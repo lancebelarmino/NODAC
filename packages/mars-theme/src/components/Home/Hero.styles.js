@@ -17,20 +17,32 @@ const useStyles = createStyles((theme) => ({
   },
 
   btn: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     width: '100%',
-    height: 88,
-    padding: '0 28px',
+    height: 'auto',
+    padding: '16px 28px',
+    border: '1px solid #000000',
+    background: theme.colors.white[0],
+    color: theme.colors.black[1],
+    transition: `${theme.other.transitions.boxShadow}, ${theme.other.transitions.background}`,
+
+    '&:hover': {
+      background: theme.colors.gray[0],
+      boxShadow: '8px 8px 0px #000000',
+    },
 
     '&:not(:last-child)': {
       marginBottom: 28,
     },
   },
 
-  btnLabel: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
+  // btnLabel: {
+  //   display: 'flex',
+  //   justifyContent: 'space-between',
+  //   width: '100%',
+  // },
 
   btnInfo: {
     textAlign: 'left',

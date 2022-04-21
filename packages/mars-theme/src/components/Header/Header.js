@@ -6,14 +6,14 @@ import logo from '../../assets/images/header-logo.png';
 import useStyles from './Header.styles';
 
 const linksData = [
-  { link: '#', label: 'Treasury' },
-  { link: '#', label: 'Whitepaper' },
-  { link: '#', label: 'Resources' },
-  { link: '#', label: 'Socials' },
+  { link: 'https://debank.com/profile/0xed56a7f78b830518ff00808e2baff0f4bdc722ed', label: 'Treasury' },
+  { link: 'https://drive.google.com/file/d/1fYlN-1r6wv4ISwSV7-lw7gETFzPDk4Ac/view', label: 'Whitepaper' },
+  { link: 'https://medium.com/@nodac.official', label: 'Resources' },
+  { link: 'https://linktr.ee/nodacofficial', label: 'Socials' },
   { link: '#', label: 'Launch Dashboard', isBtn: true },
 ];
 
-const Header = ({ state }) => {
+const Header = () => {
   const [opened, setOpened] = useState();
   const [isScrolled, setIsScrolled] = useState(false);
   const isTablet = useMediaQuery('(max-width: 1024px)');

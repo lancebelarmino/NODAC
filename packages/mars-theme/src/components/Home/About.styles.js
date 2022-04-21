@@ -7,7 +7,6 @@ const useStyles = createStyles((theme) => ({
   },
 
   card: {
-    height: 400,
     marginBottom: 40,
   },
 

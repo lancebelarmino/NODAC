@@ -2,6 +2,8 @@ import { css, connect, styled, Head } from 'frontity';
 import Switch from '@frontity/components/switch';
 import { MantineProvider, Global } from '@mantine/core';
 import Header from './Header/header';
+import Home from '../pages/Home';
+import Footer from './Footer/Footer';
 // import List from './List';
 import Post from './post';
 import Loading from './loading';
@@ -10,7 +12,6 @@ import PageError from './page-error';
 import theme from '../styles/theme';
 import components from '../styles/components';
 import global from '../styles/global';
-import Home from '../pages/Home';
 
 /**
  * Theme is the root React component of our theme. The one we will export
@@ -28,6 +29,7 @@ const Theme = ({ state }) => {
     <>
       {/* Add some metatags to the <head> of the HTML. */}
       <MantineProvider theme={theme} styles={components} withNormalizeCSS>
+        <Global styles={global} />
         <Title />
         <Head>
           <meta name="description" content={state.frontity.description} />
@@ -40,7 +42,6 @@ const Theme = ({ state }) => {
         {/* Add the main section. It renders a different component depending
       on the type of URL we are in. */}
 
-        <Global styles={global} />
         <Switch>
           <Home when={data.isHome} />
           <Loading when={data.isFetching} />
@@ -48,6 +49,8 @@ const Theme = ({ state }) => {
           <Post when={data.isPostType} />
           <PageError when={data.isError} />
         </Switch>
+
+        <Footer />
       </MantineProvider>
     </>
   );

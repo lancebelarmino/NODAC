@@ -18,8 +18,6 @@ const Item = ({ state, item }) => {
   const { classes } = useStyles();
   const media = state.source.attachment[item.featured_media];
 
-  console.log();
-
   return (
     <WindowCard>
       <article className={classes.content}>

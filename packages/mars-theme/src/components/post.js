@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { connect, styled } from 'frontity';
-import Link from './link';
+import { Text, Title, Group, Container, SimpleGrid, Image, Center } from '@mantine/core';
 import List from './List';
-import Section from './Section/Section';
+import Item from './List/list-item';
 import FeaturedMedia from './featured-media';
+import noPosts from '../assets/images/blog-no-posts.png';
+import fallback from '../assets/images/news-fallback.jpg';
 import useStyles from './post.styles';
 
 /**
@@ -26,6 +28,8 @@ import useStyles from './post.styles';
  * @returns The {@link Post} element rendered.
  */
 const Post = ({ state, actions, libraries }) => {
+  const [otherPostsIndex, setOtherPostsIndex] = useState([]);
+
   // Get information about the current URL.
   const data = state.source.get(state.router.link);
   // Get the data of the post.
@@ -41,6 +45,43 @@ const Post = ({ state, actions, libraries }) => {
   // Mantine Styling
   const { classes } = useStyles();
 
+  // Get previous and next post
+  const postsData = state.source.get('/').items;
+
+  useEffect(() => {
+    if (postsData) {
+      console.log(postsData);
+      const postIndex = postsData.findIndex((i) => i.id === data.id);
+      const totalNumOfPosts = postsData.length - 1;
+      const prevPost = postIndex === 0 ? null : postsData[postIndex - 1].id;
+      const nextPost = postIndex === totalNumOfPosts ? null : postsData[postIndex + 1].id;
+      setOtherPostsIndex([prevPost, nextPost]);
+    }
+  }, [postsData]);
+
+  const otherPosts = otherPostsIndex.map((item, index) => {
+    if (item) {
+      return <Item key={item} item={state.source[data.type][item]} />;
+    }
+    return (
+      <Center key={index}>
+        <div>
+          <Image className={classes.otherPostsIcon} src={noPosts} height={80} fit="contain" />
+          {otherPostsIndex[0] === null && (
+            <Text className={classes.otherPostsNotification} size="xl">
+              Looks live you've reached our latest post. Stay tuned for more!
+            </Text>
+          )}
+          {otherPostsIndex[1] === null && (
+            <Text className={classes.otherPostsNotification} size="xl">
+              Looks live you've reached our first post. Stay tuned for more!
+            </Text>
+          )}
+        </div>
+      </Center>
+    );
+  });
+
   /**
    * Once the post has loaded in the DOM, prefetch both the
    * home posts and the list component so if the user visits
@@ -53,78 +94,58 @@ const Post = ({ state, actions, libraries }) => {
 
   // Load the post, but only if the data is ready.
   return data.isReady ? (
-    <Section className={classes.section}>
-      <div>
-        <Title dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
-
-        {/* Hide author and date on pages */}
-        {!data.isPage && (
-          <div>
-            {author && (
-              <StyledLink link={author.link}>
-                <Author>
-                  By <b>{author.name}</b>
-                </Author>
-              </StyledLink>
-            )}
-            <DateWrapper>
-              {' '}
-              on <b>{date.toDateString()}</b>
-            </DateWrapper>
-          </div>
+    <Container size={1000}>
+      <article className={classes.section}>
+        {state.source.attachment[post.featured_media] ? (
+          <img className={classes.featuredImage} src={state.source.attachment[post.featured_media].source_url}></img>
+        ) : (
+          <Image className={classes.featuredImage} src={fallback} height={400} />
         )}
+
+        <div className={classes.header}>
+          <Title className={classes.title} order={2}>
+            {post.title.rendered}
+          </Title>
+
+          {/* Hide author and date on pages */}
+          {!data.isPage && (
+            <Group position="apart">
+              {author && <Text className={classes.author}>{author.name}</Text>}
+              <Text>{date.toDateString()}</Text>
+            </Group>
+          )}
+        </div>
+
+        {/* Look at the settings to see if we should include the featured image */}
+        {state.theme.featured.showOnPost && <FeaturedMedia id={post.featured_media} />}
+
+        {data.isAttachment ? (
+          // If the post is an attachment, just render the description property,
+          // which already contains the thumbnail.
+          <div dangerouslySetInnerHTML={{ __html: post.description.rendered }} />
+        ) : (
+          // Render the content using the Html2React component so the HTML is
+          // processed by the processors we included in the
+          // libraries.html2react.processors array.
+          <Content>
+            <Html2React html={post.content.rendered} />
+          </Content>
+        )}
+      </article>
+
+      <div className={classes.otherPosts}>
+        <Title className={classes.otherPostsTitle} order={2}>
+          Other Posts
+        </Title>
+        <SimpleGrid className={classes.posts} cols={2} spacing={40} breakpoints={[{ maxWidth: 1024, cols: 1, spacing: 60 }]}>
+          {otherPosts}
+        </SimpleGrid>
       </div>
-
-      {/* Look at the settings to see if we should include the featured image */}
-      {state.theme.featured.showOnPost && <FeaturedMedia id={post.featured_media} />}
-
-      {data.isAttachment ? (
-        // If the post is an attachment, just render the description property,
-        // which already contains the thumbnail.
-        <div dangerouslySetInnerHTML={{ __html: post.description.rendered }} />
-      ) : (
-        // Render the content using the Html2React component so the HTML is
-        // processed by the processors we included in the
-        // libraries.html2react.processors array.
-        <Content>
-          <Html2React html={post.content.rendered} />
-        </Content>
-      )}
-    </Section>
+    </Container>
   ) : null;
 };
 
 export default connect(Post);
-
-const Container = styled.div`
-  width: 800px;
-  margin: 0;
-  padding: 24px;
-`;
-
-const Title = styled.h1`
-  margin: 0;
-  margin-top: 24px;
-  margin-bottom: 8px;
-  color: rgba(12, 17, 43);
-`;
-
-const StyledLink = styled(Link)`
-  padding: 15px 0;
-`;
-
-const Author = styled.p`
-  color: rgba(12, 17, 43, 0.9);
-  font-size: 0.9em;
-  display: inline;
-`;
-
-const DateWrapper = styled.p`
-  color: rgba(12, 17, 43, 0.9);
-  font-size: 0.9em;
-  display: inline;
-`;
-
 /**
  * This component is the parent of the `content.rendered` HTML. We can use nested
  * selectors to style that HTML.
