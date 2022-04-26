@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Title, Text, Image, Divider, SimpleGrid, Pagination } from '@mantine/core';
+import { Title, Text, Image, Divider, SimpleGrid, UnstyledButton } from '@mantine/core';
+import { usePagination } from '@mantine/hooks';
+import { sliderVariant } from '../../utils/framer-variants';
 import Section from '../Section/Section';
 import WindowCard from '../Card/WindowCard';
 import orlean from '../../assets/images/team-orlean.jpg';
@@ -30,15 +32,17 @@ const teamData = [
 ];
 
 const Team = () => {
+  const [sliderDirection, setSliderDirection] = useState(1);
   const { classes } = useStyles();
 
   // Custom Pagination
-  const [pageNumber, setPageNumber] = useState(1);
   const memberPerPage = 4;
-  const indexOfLastMember = pageNumber * memberPerPage;
+  const pageCount = Math.ceil(teamData.length / memberPerPage);
+  const pagination = usePagination({ total: pageCount, initialPage: 1 });
+  const indexOfLastMember = pagination.active * memberPerPage;
   const indexOfFirstMember = indexOfLastMember - memberPerPage;
-  const currentMembers = teamData.slice(indexOfFirstMember, indexOfLastMember).map((item) => (
-    <WindowCard key={item.name} className={classes.card}>
+  const teamList = teamData.slice(indexOfFirstMember, indexOfLastMember).map((item) => (
+    <WindowCard key={item.name} className={classes.card} variants={sliderVariant} initial="hidden" animate="visible" exit="exit" custom={sliderDirection}>
       <div className={classes.cardContent}>
         <Image className={classes.cardAvatar} src={item.image} height={260} />
         <Title order={4}>{item.name}</Title>
@@ -47,7 +51,6 @@ const Team = () => {
       </div>
     </WindowCard>
   ));
-  const pageCount = Math.ceil(teamData.length / memberPerPage);
 
   return (
     <Section className={classes.section}>
@@ -62,21 +65,35 @@ const Team = () => {
             { maxWidth: 1024, cols: 2, spacing: 40 },
             { maxWidth: 768, cols: 1, spacing: 40 },
           ]}>
-          {currentMembers}
+          {teamList}
         </SimpleGrid>
       </div>
 
       <div className={classes.pagination}>
-        <Pagination
-          classNames={{
-            item: classes.paginationItem,
+        <UnstyledButton
+          className={classes.paginationBtn}
+          onClick={() => {
+            setSliderDirection(-1);
+            pagination.previous();
           }}
-          page={pageNumber}
-          onChange={setPageNumber}
-          total={pageCount}
-          size="xl"
-          radius="xl"
-        />
+          {...(pagination.active === 1 && { disabled: true })}>
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle r="21.5" transform="matrix(-1 0 0 1 22 22)" stroke="#9A9A9A" />
+            <path d="M21.2187 22L24.5187 18.7L23.576 17.7573L19.3333 22L23.576 26.2427L24.5187 25.3L21.2187 22Z" fill="black" />
+          </svg>
+        </UnstyledButton>
+        <UnstyledButton
+          className={classes.paginationBtn}
+          onClick={() => {
+            setSliderDirection(1);
+            pagination.next();
+          }}
+          {...(pagination.active === pageCount && { disabled: true })}>
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="22" cy="22" r="21.5" stroke="#9A9A9A" />
+            <path d="M22.7813 22L19.4813 18.7L20.424 17.7573L24.6667 22L20.424 26.2427L19.4813 25.3L22.7813 22Z" fill="black" />
+          </svg>
+        </UnstyledButton>
       </div>
     </Section>
   );

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Title, Text, Divider, Image, Group, UnstyledButton, Grid } from '@mantine/core';
+import { Title, Divider, Image, Group, UnstyledButton } from '@mantine/core';
+import { AnimatePresence } from 'framer-motion';
 import Section from '../Section/Section';
 import WindowCard from '../Card/WindowCard';
 import Stats from '../Stats/Stats';
@@ -7,10 +8,6 @@ import ethIcon from '../../assets/images/tokenomics-eth.png';
 import avaxIcon from '../../assets/images/tokenomics-avax.png';
 import ftmIcon from '../../assets/images/tokenomics-ftm.png';
 import useStyles from './Tokenomics.styles';
-
-const ethData = {
-  title: 'ETH',
-};
 
 const Tokenomics = () => {
   const [activeTab, setActiveTab] = useState('ETH');
@@ -37,9 +34,11 @@ const Tokenomics = () => {
           </UnstyledButton>
         </Group>
         <WindowCard className={classes.card}>
-          {activeTab === 'ETH' && <Stats title="ETH" buyData={[13, 10, 1, 1, 1]} sellData={[13, 1, 10, 1, 1]} />}
-          {activeTab === 'AVAX' && <Stats title="AVAX" buyData={[9, 6, 1, 1, 1]} sellData={[18, 2, 10, 5, 1]} />}
-          {activeTab === 'FTM' && <Stats title="FTM" buyData={[14, 8, 1, 4, 1]} sellData={[14, 1, 8, 4, 1]} />}
+          <AnimatePresence exitBeforeEnter>
+            {activeTab === 'ETH' && <Stats key="eth" title="ETH" buyData={[13, 10, 1, 1, 1]} sellData={[13, 1, 10, 1, 1]} />}
+            {activeTab === 'AVAX' && <Stats key="avax" title="AVAX" buyData={[9, 6, 1, 1, 1]} sellData={[18, 2, 10, 5, 1]} />}
+            {activeTab === 'FTM' && <Stats key="ftm" title="FTM" buyData={[14, 8, 1, 4, 1]} sellData={[14, 1, 8, 4, 1]} />}
+          </AnimatePresence>
         </WindowCard>
       </div>
     </Section>

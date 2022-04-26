@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect, styled, decode } from 'frontity';
 import { Title, SimpleGrid, Pagination } from '@mantine/core';
 import Item from './list-item';
@@ -6,21 +6,34 @@ import Section from '../Section/Section';
 import useStyles from './list.styles';
 
 const List = ({ state }) => {
+  const [pageNumber, setPageNumber] = useState(1);
+  const [sliderDirection, setSliderDirection] = useState(1);
   const { classes } = useStyles();
 
   // Get the data of the current list.
   const data = state.source.get(state.router.link);
 
   // Custom Pagination
-  const [pageNumber, setPageNumber] = useState(1);
   const postsPerPage = 3;
+  const pageCount = Math.ceil(data.items.length / postsPerPage);
   const indexOfLastPost = pageNumber * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = data.items.slice(indexOfFirstPost, indexOfLastPost).map(({ type, id }) => {
     const item = state.source[type][id];
-    return <Item key={item.id} item={item} />;
+    return <Item key={item.id} item={item} direction={sliderDirection} />;
   });
-  const pageCount = Math.ceil(data.items.length / postsPerPage);
+
+  useEffect(() => {
+    const prevPage = JSON.parse(localStorage.getItem('newsPrevNumber'));
+
+    if (pageNumber > prevPage) {
+      setSliderDirection(-1);
+    } else {
+      setSliderDirection(1);
+    }
+
+    localStorage.setItem('newsPrevNumber', JSON.stringify(pageNumber));
+  }, [pageNumber]);
 
   return (
     <Section className={classes.section}>
@@ -48,7 +61,16 @@ const List = ({ state }) => {
       </SimpleGrid>
 
       <div className={classes.pagination}>
-        <Pagination page={pageNumber} onChange={setPageNumber} total={pageCount} size="xl" radius="xl" />
+        <Pagination
+          classNames={{
+            item: classes.paginationItem,
+          }}
+          page={pageNumber}
+          onChange={setPageNumber}
+          total={pageCount}
+          size="xl"
+          radius="xl"
+        />
       </div>
     </Section>
   );

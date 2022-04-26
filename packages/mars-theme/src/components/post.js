@@ -50,7 +50,6 @@ const Post = ({ state, actions, libraries }) => {
 
   useEffect(() => {
     if (postsData) {
-      console.log(postsData);
       const postIndex = postsData.findIndex((i) => i.id === data.id);
       const totalNumOfPosts = postsData.length - 1;
       const prevPost = postIndex === 0 ? null : postsData[postIndex - 1].id;

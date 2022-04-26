@@ -1,8 +1,13 @@
 import { createStyles } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
+  card: {
+    position: 'relative',
+  },
+
   content: {
-    padding: 24,
+    height: '100%',
+    padding: '24px 24px 60px 24px',
   },
 
   media: {
@@ -12,6 +17,13 @@ const useStyles = createStyles((theme) => ({
 
   title: {
     marginBottom: 12,
+  },
+
+  footer: {
+    position: 'absolute',
+    bottom: 24,
+    left: 24,
+    width: 'calc(100% - 48px)',
   },
 
   btn: {

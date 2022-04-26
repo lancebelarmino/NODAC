@@ -36,9 +36,33 @@ const useStyles = createStyles((theme) => ({
     justifyContent: 'flex-end',
   },
 
-  paginationItem: {
-    '&:not(:first-of-type):not(:last-of-type)': {
-      display: 'none',
+  paginationBtn: {
+    '& svg circle': {
+      stroke: theme.colors.gray[1],
+      transition: theme.other.transitions.stroke,
+    },
+
+    '& svg path': {
+      fill: theme.colors.gray[1],
+      transition: theme.other.transitions.stroke,
+    },
+
+    '&:hover svg circle': {
+      stroke: theme.colors.blue[0],
+    },
+
+    '&:hover svg path': {
+      fill: theme.colors.blue[0],
+    },
+
+    '&:disabled': {
+      opacity: 0.6,
+      filter: 'grayscale(1)',
+      cursor: 'not-allowed',
+    },
+
+    '&:not(:last-of-type)': {
+      marginRight: 12,
     },
   },
 }));

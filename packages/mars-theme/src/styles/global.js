@@ -17,6 +17,7 @@ const global = (theme) => [
   {
     body: {
       fontFamily: theme.fontFamily,
+      overflowX: 'hidden',
     },
   },
 ];

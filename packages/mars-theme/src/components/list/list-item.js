@@ -1,5 +1,6 @@
 import { connect, styled } from 'frontity';
 import { Anchor, Image, Title, Divider, Text, Group, Button } from '@mantine/core';
+import { sliderVariant } from '../../utils/framer-variants';
 import Link from '../link';
 import WindowCard from '../Card/WindowCard';
 import fallback from '../../assets/images/news-fallback.jpg';
@@ -13,13 +14,13 @@ import useStyles from './list-item.styles';
  * - Author: name of author and published date
  * - FeaturedMedia: the featured image/video of the post
  */
-const Item = ({ state, item }) => {
+const Item = ({ state, item, direction }) => {
   const date = new Date(item.date);
   const { classes } = useStyles();
   const media = state.source.attachment[item.featured_media];
 
   return (
-    <WindowCard>
+    <WindowCard className={classes.card} variants={sliderVariant} initial="hidden" animate="visible" exit="exit" custom={direction}>
       <article className={classes.content}>
         {/*
          * If the want to show featured media in the
@@ -49,7 +50,7 @@ const Item = ({ state, item }) => {
         {/* If the post has an excerpt (short summary text), we render it */}
         {item.excerpt && <Excerpt dangerouslySetInnerHTML={{ __html: item.excerpt.rendered }} />}
 
-        <Group position="apart">
+        <Group className={classes.footer} position="apart">
           <Text>{date.toDateString()}</Text>
           <Button component={Link} className={classes.btn} link={item.link}>
             Read Full Article

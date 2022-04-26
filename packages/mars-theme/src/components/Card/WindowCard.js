@@ -1,14 +1,12 @@
 import React from 'react';
-import { Divider } from '@mantine/core';
-import { ReactComponent as Dot } from '../../assets/svg/window-dot.svg';
-import { ReactComponent as Close } from '../../assets/svg/window-close.svg';
+import { motion } from 'framer-motion';
 import useStyles from './WindowCard.styles';
 
-const WindowCard = ({ children, className }) => {
+const WindowCard = ({ children, className, test, ...props }) => {
   const { classes, cx } = useStyles();
 
   return (
-    <div className={cx(classes.card, className)}>
+    <motion.div className={cx(classes.card, className)} {...props}>
       <div className={classes.controls}>
         <svg id="window-dot" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
           <path id="Path_5" data-name="Path 5" d="M0,0H20V20H0Z" fill="none" />
@@ -21,7 +19,7 @@ const WindowCard = ({ children, className }) => {
         </svg>
       </div>
       {children}
-    </div>
+    </motion.div>
   );
 };
 

@@ -9,7 +9,6 @@ import Treasury from '../components/Home/Treasury';
 import Roadmap from '../components/Home/Roadmap';
 import News from '../components/Home/News';
 import Team from '../components/Home/Team';
-import Footer from '../components/Footer/Footer';
 import Spinner from '../components/Spinner/Spinner';
 
 const Home = ({ state }) => {

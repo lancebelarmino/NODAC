@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'frontity';
-import { Title, Divider, Text, Image, Center, Grid, Group } from '@mantine/core';
+import { Title, Divider, Text, Image, Center, Grid } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import Section from '../Section/Section';
 import WindowCard from '../Card/WindowCard';

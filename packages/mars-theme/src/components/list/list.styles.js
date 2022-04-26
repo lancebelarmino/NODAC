@@ -18,6 +18,24 @@ const useStyles = createStyles((theme) => ({
     display: 'flex',
     justifyContent: 'flex-end',
   },
+
+  paginationItem: {
+    transition: `${theme.other.transitions.border}, ${theme.other.transitions.color}`,
+
+    '& svg path': {
+      fill: theme.colors.gray[1],
+      transition: theme.other.transitions.stroke,
+    },
+
+    '&:hover': {
+      color: theme.colors.blue[0],
+      borderColor: theme.colors.blue[0],
+    },
+
+    '&:hover svg path': {
+      fill: theme.colors.blue[0],
+    },
+  },
 }));
 
 export default useStyles;
