@@ -3,6 +3,7 @@ import { createStyles } from '@mantine/core';
 const useStyles = createStyles((theme) => ({
   card: {
     position: 'relative',
+    height: 520,
   },
 
   content: {

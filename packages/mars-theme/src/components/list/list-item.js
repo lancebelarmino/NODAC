@@ -19,6 +19,8 @@ const Item = ({ state, item, direction }) => {
   const { classes } = useStyles();
   const media = state.source.attachment[item.featured_media];
 
+  console.log(item.excerpt.rendered);
+
   return (
     <WindowCard className={classes.card} variants={sliderVariant} initial="hidden" animate="visible" exit="exit" custom={direction}>
       <article className={classes.content}>
